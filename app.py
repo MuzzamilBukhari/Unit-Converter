@@ -5,6 +5,7 @@ lengthUnits = ['meters', 'kilometers', 'miles', 'feet', 'inches', 'yards', 'cent
 tempUnits = ['Celsius', 'Fahrenheit', 'Kelvin']
 volumeUnits = ['liters', 'milliliters', 'gallons', 'fluid ounces', 'cups', 'cubic meters', 'cubic centimeters']
 weightUnits = ['kilograms', 'grams', 'pounds', 'ounces', 'tons', 'milligrams']
+digitalStorageUnits = ['bytes', 'kilobytes (KB)', 'megabytes (MB)', 'gigabytes (GB)', 'terabytes (TB)', 'petabytes (PT)']
 
 def convert_length(val, fromVal, toVal):
     meter_conversion = {
@@ -63,11 +64,24 @@ def convert_weight(val, fromVal, toVal):
     result = kg / kg_conversion[toVal]
     return result
 
+def convert_digital_storage(val, fromVal, toVal):
+    byte_conversion = {
+        'bytes': 1,
+        'kilobytes (KB)':1024,
+        'megabytes (MB)':1048576,
+        'gigabytes (GB)':1073741824,
+        'terabytes (TB)':1099511627776,
+        'petabytes (PT)':1125899906842624
+    }
+    bytes = val * byte_conversion[fromVal]
+    result = bytes / byte_conversion[toVal]
+    return result
+
 st.set_page_config(page_title="Unit Converter", layout="wide")
 
 st.title("🔢 Unit Converter App 🚀")
 
-conversion = st.selectbox('🔄 Select a conversion', ['📏 Length', '🌡 Temperature', '🛢 Volume', '⚖ Weight'])
+conversion = st.selectbox('🔄 Select a conversion', ['📏 Length', '🌡 Temperature', '🛢 Volume', '⚖ Weight', 'Digital Storage'])
 value = st.number_input("✏ Enter value to convert")
 
 if conversion == '📏 Length':
@@ -96,6 +110,13 @@ elif conversion == '⚖ Weight':
     toVal = st.selectbox('🎯 To:', weightUnits)
     if st.button("🔄 Convert"):
         result = convert_weight(value, fromVal, toVal)
+        st.success(f"✅ {value} {fromVal} = {result:.6f} {toVal}")
+
+elif conversion == 'Digital Storage':
+    fromVal = st.selectbox('📍 From:', digitalStorageUnits)
+    toVal = st.selectbox('🎯 To:', digitalStorageUnits)
+    if st.button("🔄 Convert"):
+        result = convert_digital_storage(value, fromVal, toVal)
         st.success(f"✅ {value} {fromVal} = {result:.6f} {toVal}")
 
 else:
